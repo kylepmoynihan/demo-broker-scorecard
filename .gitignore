@@ -1,0 +1,16 @@
+# Salesforce DX
+.sfdx/
+.sf/
+
+# Scripts (synthetic data, object creation)
+scripts/
+
+# IDE
+.vscode/
+*.log
+
+# OS
+.DS_Store
+
+# Node
+node_modules/

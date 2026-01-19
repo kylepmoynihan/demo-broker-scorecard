@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apex:page controller="DemoPDFGenerator" renderAs="pdf" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+    <html>
+        <head>
+            <style type="text/css" media="print">
+                @page {
+                    size: letter;
+                    margin: 15mm 20mm 20mm 20mm;
+                    @bottom-center {
+                        content: element(footer);
+                    }
+                }
+
+                body {
+                    position: relative;
+                    min-height: 100%;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .footer {
+                    position: running(footer);
+                    background-color: white;
+                    border-top: 1px solid #E5E7EB;
+                    padding-top: 0.5rem;
+                }
+
+                .main-content {
+                    margin-bottom: 0;
+                }
+            </style>
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.5;">
+            <div class="main-content">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; color: #0D5640;">Broker Scorecard</h1>
+                </div>
+
+                <!-- Broker Information -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.25rem; border-bottom: 2px solid #0AA97F; padding-bottom: 0.25rem;">Broker Information</h2>
+                    <div style="margin-top: 0.5rem;">
+                        <div>Broker Name: <strong><apex:outputText value="{!$CurrentPage.parameters.brokerName}"/></strong></div>
+                        <div>Period: <strong><apex:outputText value="{!$CurrentPage.parameters.startDate}"/> to <apex:outputText value="{!$CurrentPage.parameters.endDate}"/></strong></div>
+                    </div>
+                </div>
+
+                <!-- Policy Summary -->
+                <div style="background-color: #F3F7F6; padding: 1rem; margin-bottom: 1rem; border-radius: 0.25rem;">
+                    <h2 style="color: rgb(47, 57, 54); font-size: 1.25rem; font-weight: bold; margin-bottom: 0.75rem;">Policy Summary</h2>
+                    <div style="background-color: white; border-top: 3px solid #0AA97F; padding: 0.75rem;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #E5E7EB;">
+                                    <td style="padding: 0.5rem; font-weight: 500;">Total Policies:</td>
+                                    <td style="padding: 0.5rem;"><apex:outputText value="{!$CurrentPage.parameters.totalPolicyCount}"/></td>
+                                    <td style="padding: 0.5rem; font-weight: 500;">Written Policies:</td>
+                                    <td style="padding: 0.5rem;"><apex:outputText value="{!$CurrentPage.parameters.writtenPolicyCount}"/></td>
+                                </tr>
+                                <tr style="background-color: #F9FAFB;">
+                                    <td style="padding: 0.5rem; font-weight: 500;">Total Premium:</td>
+                                    <td style="padding: 0.5rem;">$<apex:outputText value="{0, number, #,###,##0.00}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.totalPremium)}"/>
+                                    </apex:outputText></td>
+                                    <td style="padding: 0.5rem; font-weight: 500;">Written Premium:</td>
+                                    <td style="padding: 0.5rem;">$<apex:outputText value="{0, number, #,###,##0.00}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.writtenPremium)}"/>
+                                    </apex:outputText></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Hit Rates -->
+                <div style="background-color: #F3F7F6; padding: 1rem; margin-bottom: 1rem; border-radius: 0.25rem;">
+                    <h2 style="color: rgb(47, 57, 54); font-size: 1.25rem; font-weight: bold; margin-bottom: 0.75rem;">Hit Rates</h2>
+                    <div style="background-color: white; border-top: 3px solid #0AA97F; padding: 0.75rem;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 0.5rem; font-weight: 500; width: 50%;">Hit Rate (Policies):</td>
+                                    <td style="padding: 0.5rem;"><apex:outputText value="{0, number, 0.0}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.hitRate)}"/>
+                                    </apex:outputText>%</td>
+                                </tr>
+                                <tr style="background-color: #F9FAFB;">
+                                    <td style="padding: 0.5rem; font-weight: 500;">Premium Hit Rate:</td>
+                                    <td style="padding: 0.5rem;"><apex:outputText value="{0, number, 0.0}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.premiumHitRate)}"/>
+                                    </apex:outputText>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Written Premium by Coverage Type -->
+                <div style="background-color: #F3F7F6; padding: 1rem; margin-bottom: 1rem; border-radius: 0.25rem;">
+                    <h2 style="color: rgb(47, 57, 54); font-size: 1.25rem; font-weight: bold; margin-bottom: 0.75rem;">Written Premium by Coverage Type</h2>
+                    <div style="background-color: white; border-top: 3px solid #0AA97F; padding: 0.75rem;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #E5E7EB;">
+                                    <td style="padding: 0.5rem; font-weight: 500;">General Liability:</td>
+                                    <td style="padding: 0.5rem;">$<apex:outputText value="{0, number, #,###,##0.00}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.generalLiabilityPremium)}"/>
+                                    </apex:outputText></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #E5E7EB; background-color: #F9FAFB;">
+                                    <td style="padding: 0.5rem; font-weight: 500;">Professional Liability:</td>
+                                    <td style="padding: 0.5rem;">$<apex:outputText value="{0, number, #,###,##0.00}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.professionalLiabilityPremium)}"/>
+                                    </apex:outputText></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #E5E7EB;">
+                                    <td style="padding: 0.5rem; font-weight: 500;">Inland Marine:</td>
+                                    <td style="padding: 0.5rem;">$<apex:outputText value="{0, number, #,###,##0.00}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.inlandMarinePremium)}"/>
+                                    </apex:outputText></td>
+                                </tr>
+                                <tr style="background-color: #F9FAFB;">
+                                    <td style="padding: 0.5rem; font-weight: 500;">Commercial Property:</td>
+                                    <td style="padding: 0.5rem;">$<apex:outputText value="{0, number, #,###,##0.00}">
+                                        <apex:param value="{!VALUE($CurrentPage.parameters.commercialPropertyPremium)}"/>
+                                    </apex:outputText></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p style="font-size: 0.75rem; font-style: italic; color: #6B7280; margin: 0;">
+                    Report generated on: <apex:outputText value=" {0,date,MM/dd/yyyy}">
+                        <apex:param value="{!NOW()}" />
+                    </apex:outputText>
+                </p>
+                <p style="font-size: 0.75rem; font-style: italic; color: #6B7280; margin: 0;">
+                    Generated by: <apex:outputText value=" {!$User.FirstName} {!$User.LastName}"/>
+                </p>
+            </div>
+        </body>
+    </html>
+</apex:page>

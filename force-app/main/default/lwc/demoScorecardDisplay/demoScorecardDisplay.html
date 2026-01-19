@@ -1,0 +1,159 @@
+<template>
+    <lightning-card title="Broker Scorecard" icon-name="standard:report">
+        <!-- Input Form -->
+        <template if:false={showResults}>
+            <div class="slds-p-around_medium">
+                <div class="slds-text-heading_small slds-m-bottom_medium">
+                    Select a broker and date range to generate the scorecard
+                </div>
+
+                <div class="slds-form slds-form_stacked">
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-combobox
+                            name="broker"
+                            label="Select Broker"
+                            value={selectedBrokerId}
+                            placeholder="Choose a broker..."
+                            options={brokerOptions}
+                            onchange={handleBrokerChange}
+                            required>
+                        </lightning-combobox>
+                    </div>
+
+                    <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input
+                                type="date"
+                                name="startDate"
+                                label="Start Date"
+                                value={inputStartDate}
+                                onchange={handleStartDateChange}
+                                required>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input
+                                type="date"
+                                name="endDate"
+                                label="End Date"
+                                value={inputEndDate}
+                                onchange={handleEndDateChange}
+                                required>
+                            </lightning-input>
+                        </div>
+                    </div>
+
+                    <div class="slds-m-top_medium">
+                        <lightning-button
+                            variant="brand"
+                            label="Generate Scorecard"
+                            onclick={handleGenerateScorecard}
+                            disabled={isGenerateDisabled}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-p-around_large slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Results Display -->
+        <template if:true={showResults}>
+            <div class="slds-p-around_medium">
+                <!-- Back Button -->
+                <div class="slds-m-bottom_medium">
+                    <lightning-button
+                        variant="neutral"
+                        label="Back to Selection"
+                        icon-name="utility:back"
+                        onclick={handleBack}>
+                    </lightning-button>
+                </div>
+
+                <div class="pdf-content">
+                    <div class="slds-text-heading_large slds-align_absolute-center slds-m-bottom_medium">
+                        Broker Scorecard
+                    </div>
+
+                    <!-- Broker Information -->
+                    <div class="slds-text-heading_medium slds-m-bottom_small">
+                        Broker Information
+                    </div>
+                    <div class="slds-grid slds-wrap slds-m-bottom_medium">
+                        <div class="slds-col slds-size_1-of-1">
+                            <p><strong>Broker: </strong><span>{scorecardData.brokerName}</span></p>
+                            <p><strong>Period: </strong><span>{scorecardData.startDate} to {scorecardData.endDate}</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Policy Summary -->
+                    <div class="slds-text-heading_medium slds-m-bottom_small">
+                        Policy Summary
+                    </div>
+                    <div class="slds-grid slds-wrap slds-m-bottom_medium">
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>Total Policies: </strong><span>{scorecardData.totalPolicyCount}</span></p>
+                            <p><strong>Total Premium: </strong><span>{formattedTotalPremium}</span></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>Written Policies: </strong><span>{scorecardData.writtenPolicyCount}</span></p>
+                            <p><strong>Written Premium: </strong><span>{formattedWrittenPremium}</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Hit Rates -->
+                    <div class="slds-text-heading_medium slds-m-bottom_small">
+                        Hit Rates
+                    </div>
+                    <div class="slds-grid slds-wrap slds-m-bottom_medium">
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>Hit Rate: </strong><span>{scorecardData.hitRate}%</span></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>Premium Hit Rate: </strong><span>{scorecardData.premiumHitRate}%</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Written Premium by Coverage Type -->
+                    <div class="slds-text-heading_medium slds-m-bottom_small">
+                        Written Premium by Coverage Type
+                    </div>
+                    <div class="slds-grid slds-wrap slds-m-bottom_medium">
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>General Liability: </strong><span>{formattedGLPremium}</span></p>
+                            <p><strong>Professional Liability: </strong><span>{formattedPLPremium}</span></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <p><strong>Inland Marine: </strong><span>{formattedIMPremium}</span></p>
+                            <p><strong>Commercial Property: </strong><span>{formattedCPPremium}</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-m-top_medium">
+                    <lightning-button
+                        label="Download PDF"
+                        variant="brand"
+                        onclick={handleGeneratePDF}
+                        icon-name="utility:download">
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={errorMessage}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>{errorMessage}</h2>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>

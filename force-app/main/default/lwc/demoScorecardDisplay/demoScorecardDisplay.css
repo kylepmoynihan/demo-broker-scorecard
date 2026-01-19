@@ -1,0 +1,50 @@
+.slds-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-content {
+    padding: 1.5rem;
+}
+
+.slds-text-heading_large {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #0D5640;
+    margin-bottom: 1rem;
+}
+
+.slds-text-heading_medium {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333333;
+    border-bottom: 2px solid #0AA97F;
+    padding-bottom: 0.5rem;
+}
+
+.slds-grid {
+    margin-top: 0.75rem;
+}
+
+p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+strong {
+    color: #555555;
+}
+
+.generate-pdf-button {
+    margin-top: 1rem;
+}
+
+.slds-notify_toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
